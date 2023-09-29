@@ -1,0 +1,72 @@
+version: "3"
+
+services:
+
+  server:
+    image: nginx:alpine
+    build:
+      context: .
+      dockerfile: ./docker/server/Dockerfile
+    depends_on:
+      - fastapp
+    ports:
+      - 8080:88
+    networks:
+      - app-network
+
+  db:
+    image: postgres:12
+    volumes:
+      - db_tmp:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - 5433:5432
+    env_file:
+      - .env
+    networks:
+      - app-network
+
+  fastapp:
+    restart: always
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
+    ports:
+      - 8000:8000
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+    # "while !</dev/tcp/db/5432; do sleep 1" будет продолжаться до тех пор,
+    # пока Postgres не заработает
+    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; alembic upgrade head; uvicorn --host 0.0.0.0 --port 8000 --proxy-headers main:app'
+    networks:
+      - app-network
+
+  tests:
+    build:
+      context: .
+      dockerfile: ./docker/tests/Dockerfile
+    depends_on:
+      - fastapp
+    networks:
+      - app-network
+    # "while !</dev/tcp/fastapp/8000; do sleep 1" будет продолжаться до тех пор,
+    # пока FastAPi не заработает
+    command: bash -c 'while !</dev/tcp/fastapp/8000; do sleep 1; done; pytest -v -s http_test'
+
+  redis:
+    image: redis:7
+    command: --port 5370
+    expose:
+      - 5370
+
+networks:
+  app-network:
+
+volumes:
+  db_tmp:

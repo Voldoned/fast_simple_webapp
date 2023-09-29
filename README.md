@@ -4,7 +4,7 @@
 
 out host app: 0.0.0.0
 
-out port app: 8000
+out port app: 8080
 
 get:
 - `/get_data_users` -- list of users (ID, name, password, email, registered at)
@@ -27,9 +27,9 @@ Create file `.env` in work directory for run application with variables:
 ## Run
 In terminal
 ```bash
-sudo docker-compose build && sudo docker-compose up
+sudo docker compose build && sudo docker compose up
 ```
 or
 ```bash
-sudo docker-compose build && sudo docker-compose up -d
+sudo docker compose build && sudo docker compose up -d
 ```

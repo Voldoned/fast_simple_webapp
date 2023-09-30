@@ -16,15 +16,19 @@ class APIClient:
 
         if self.session:
             return self.session.post(url=url, params=params, data=data,
-                                     json=json, headers=headers, cookies=cookies)
+                                     json=json, headers=headers,
+                                     cookies=cookies)
         else:
             return requests.post(url=url, params=params, data=data,
                                  json=json, headers=headers, cookies=cookies)
 
-    def get(self, path=None, params=None, headers=None, cookies=None) -> Response:
+    def get(self, path=None, params=None, headers=None,
+            cookies=None) -> Response:
         url = f"{self.base_address}{path}"
 
         if self.session:
-            return self.session.get(url=url, params=params, headers=headers, cookies=cookies)
+            return self.session.get(url=url, params=params, headers=headers,
+                                    cookies=cookies)
         else:
-            return requests.get(url=url, params=params, headers=headers, cookies=cookies)
+            return requests.get(url=url, params=params, headers=headers,
+                                cookies=cookies)

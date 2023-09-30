@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from requests import Response
 
-from src.enums.global_enums import GlobalErrorMessages as GEM, \
+from src.global_enums import GlobalErrorMessages as GEM, \
     HeaderContentType as HCT
 
 
@@ -16,8 +16,6 @@ class BaseResponse:
         self.response_json = response.json()
 
     def __str__(self):
-        print(self.response_headers)
-        print(self.response_json)
         output = f"\nStatus code: {self.response_status_code}" \
                  f" Request URL: {self.response.url}"
 
@@ -38,23 +36,26 @@ class BaseResponse:
                 GEM.WRONG_STATUS_CODE.value
         else:
             assert self.response_status_code == status_code, \
-                GEM.WRONG_STATUS_CODE.value + (f" Status code: "
-                                               f"{self.response_status_code}")
+                GEM.WRONG_STATUS_CODE.value + (
+                    f" Status code: "
+                    f"{self.response_status_code}. "
+                    f"Response {self.response_json}"
+                )
 
     def assert_has_response_json(self):
-        assert self.response_json, GEM.HEADER_CONTENT_TYPE_NOT_JSON.value + \
-            (f" Header 'content-type': {self.response_headers['content-type']}.")
+        assert self.response_json, (
+                GEM.HEADER_CONTENT_TYPE_NOT_JSON.value + (
+            f"\nHeader 'content-type': {self.response_headers['content-type']}."
+        ))
 
         assert self.response_json, f"JSON: {self.response_json}."
 
     def validate_json(self, schema: type[BaseModel]):
-        if self.response_json:
-            if isinstance(self.response_json, (list, tuple)):
-                for i in self.response_json:
-                    schema.model_validate(i)
-            else:
-                schema.model_validate(self.response_json)
-
-            return self.response_json
+        self.assert_has_response_json()
+        if isinstance(self.response_json, (list, tuple)):
+            for i in self.response_json:
+                schema.model_validate(i)
         else:
-            return None
+            schema.model_validate(self.response_json)
+
+        return self.response_json

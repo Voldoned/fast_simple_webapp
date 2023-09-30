@@ -2,48 +2,46 @@ import pytest
 
 from src.base_classes.base_response import BaseResponse
 from src.base_classes.api_client import APIClient
-from src.pydantic_schema import UserSchema
-
-from src.pydantic_schema import CreateUserResponse
+from src.pydantic_schema import UserSchema, CreateUserResponse, ErrorMessage
+from src.generators_data import users_data, bad_users_data
 
 
 class TestHTTP:
-    URLS_FOR_GET_REQUESTS = [
-        "/get_data/users",
-        "/get_data/user/0",
-        "/get_data/users/first/1",
+    URL_AND_CODE_FOR_GET_USERS_REQUESTS = [
+        ("/get_data/users", 200),
+        ("/get_data/users/first/10", 200),
+        ("/get_data/users/first/0", 406),
     ]
 
-    URLS_FOR_POST_REQUESTS = [
-        "/get_data/user/add"
+    URL_AND_CODE_POST_REQUESTS = [
+        ("/get_data/user/add", users_data, 200),
+        ("/get_data/user/add", bad_users_data, 422),
     ]
 
-    @pytest.mark.parametrize('url_path', URLS_FOR_POST_REQUESTS)
-    def test_status_code_post_request(self, domen, headers_for_requests,
-                                      url_path):
-        data = {
-            "id": 0,
-            "email": "string",
-            "username": "string",
-            "password": "string",
-            "registered_at": "2023-09-27T15:33:57.764"
-        }
+    @pytest.mark.parametrize('url_path, users_data, status_code',
+                             URL_AND_CODE_POST_REQUESTS)
+    def test_status_code_post_request(self, domen: str,
+                                      headers_for_requests: dict,
+                                      url_path: str, users_data: list[dict],
+                                      status_code: int):
+        for user_data in users_data:
+            response = APIClient(domen).post(
+                path=url_path,
+                headers=headers_for_requests,
+                json=user_data
+            )
 
-        response = APIClient(domen).post(
-            path=url_path,
-            headers=headers_for_requests,
-            json=data,
-        )
+            response_obj: BaseResponse = BaseResponse(response)
 
-        response_obj: BaseResponse = BaseResponse(response)
+            response_obj.assert_status_code(status_code)
+            if status_code == 200:
+                response_obj.assert_has_response_json()
+                response_obj.validate_json(CreateUserResponse)
 
-        response_obj.assert_status_code(200)
-        response_obj.assert_has_response_json()
-        response_obj.validate_json(CreateUserResponse)
-
-    @pytest.mark.parametrize('url_path', URLS_FOR_GET_REQUESTS)
+    @pytest.mark.parametrize("url_path, status_code",
+                             URL_AND_CODE_FOR_GET_USERS_REQUESTS)
     def test_status_code_get_request(self, domen, headers_for_requests,
-                                     url_path):
+                                     url_path: str, status_code: int):
         response = APIClient(domen).get(
             path=url_path,
             headers=headers_for_requests
@@ -51,6 +49,10 @@ class TestHTTP:
 
         response_obj: BaseResponse = BaseResponse(response)
 
-        response_obj.assert_status_code(200)
+        response_obj.assert_status_code(status_code)
         response_obj.assert_has_response_json()
-        response_obj.validate_json(UserSchema)
+
+        if status_code == 200:
+            response_obj.validate_json(UserSchema)
+        else:
+            response_obj.validate_json(ErrorMessage)

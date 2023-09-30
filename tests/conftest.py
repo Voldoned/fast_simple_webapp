@@ -3,18 +3,18 @@ import pytest
 
 
 @pytest.fixture()
-def session():
+def session() -> requests.Session:
     with requests.Session() as session:
         yield session
 
 
 @pytest.fixture()
-def domen():
+def domen() -> str:
     return 'http://server:88'
 
 
 @pytest.fixture()
-def headers_for_requests():
+def headers_for_requests() -> dict[str: str]:
     return {
         'Accept': 'text/html,'
                   'application/json,'

@@ -14,3 +14,7 @@ class UserSchema(BaseModel):
 class CreateUserResponse(BaseModel):
     status: str = "success"
     new_user: UserSchema
+
+
+class ErrorMessage(BaseModel):
+    detail: str

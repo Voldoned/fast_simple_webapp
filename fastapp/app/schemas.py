@@ -2,7 +2,7 @@ from datetime import datetime
 from pydantic import BaseModel
 
 
-class UserCreate(BaseModel):
+class UserCreateSchema(BaseModel):
     id: int
     email: str
     username: str

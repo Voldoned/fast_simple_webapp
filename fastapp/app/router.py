@@ -15,6 +15,9 @@ router = APIRouter(
 
 
 def statement_select_all_from_user():
+    """
+    Query for get ordered list of users in tabel 'user'
+    """
     return select(User).order_by(User.id)
 
 
@@ -65,6 +68,20 @@ async def get_user_with_id(id: int,
     statement = select(User).where(User.id == id)
     result = await session.execute(statement)
     return result.scalars().all()
+
+
+@router.get("users/count_users")
+@cache(expire=60)
+async def get_count_of_users(
+        session: AsyncSession = Depends(get_async_session)):
+    """
+    Get count registered users.
+    """
+    statement = statement_select_all_from_user()
+    result = await session.execute(statement)
+    return {
+        "count_users": len(result.scalars().all())
+    }
 
 
 @router.post("/user/add")

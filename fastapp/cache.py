@@ -7,6 +7,9 @@ from config import REDIS_HOST, REDIS_PORT
 
 
 async def init_redis():
+    """
+    Connect to redis db in async mode
+    """
     redis = aioredis.from_url(
             f"redis://{REDIS_HOST}:{REDIS_PORT}",
             encoding="utf8",

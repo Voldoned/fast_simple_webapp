@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Depends
-from sqlalchemy import select, insert
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import insert
 from sqlalchemy.orm import Session, Query
 
 from fastapi_cache.decorator import cache
@@ -15,7 +15,7 @@ router = APIRouter(
 
 
 def select_all_from_user(session: Session) -> Query:
-    return session.query(User)
+    return session.query(User).order_by(User.id)
 
 
 @router.get("/users")
@@ -27,7 +27,21 @@ def get_users(session: Session = Depends(get_session)):
 @router.get("/users/first/{count}")
 @cache(expire=60)
 def get_first_users(count: int, session: Session = Depends(get_session)):
-    return select_all_from_user(session).all()[:count]
+    result = select_all_from_user(session).all()
+
+    # Если введеное число будет отрицательным, то срез будет с конца списка.
+    # Если введенное число будет равно нулю, результатом будет пустой список,
+    # поэтому вызываем исключение некорретных входных данных
+    if count > 0:
+        return result[:count]
+    elif count < 0:
+        return result[count:]
+    else:
+        raise HTTPException(
+            status_code=406,
+            detail="Empty result. Please, enter nonzero value of 'count'",
+
+        )
 
 
 @router.get("/user/{id}")

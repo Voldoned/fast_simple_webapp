@@ -3,14 +3,9 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from fastapi_cache import FastAPICache
-from fastapi_cache.backends.redis import RedisBackend
-
-from redis import asyncio as aioredis
-
 from app.router import router
 from app.database import init_db
-from config import REDIS_HOST, REDIS_PORT
+from cache import init_redis
 
 app = FastAPI()
 
@@ -32,13 +27,7 @@ app.include_router(router)
 @app.on_event("startup")
 def on_startup():
     init_db()
-
-    redis = aioredis.from_url(
-        f"redis://{REDIS_HOST}:{REDIS_PORT}",
-        encoding="utf8",
-        decode_responses=True
-    )
-    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
+    init_redis()
 
 
 if __name__ == '__main__':

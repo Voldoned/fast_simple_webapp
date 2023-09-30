@@ -33,3 +33,5 @@ or
 ```bash
 sudo docker compose build && sudo docker compose up -d
 ```
+
+Swagger documentation: `http://0.0.0.0:8080/docs`

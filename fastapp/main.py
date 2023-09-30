@@ -4,8 +4,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.router import router
-from app.database import init_db
 from cache import init_redis
+from app.database import init_models
 
 app = FastAPI()
 
@@ -25,9 +25,9 @@ app.include_router(router)
 
 
 @app.on_event("startup")
-def on_startup():
-    init_db()
-    init_redis()
+async def on_startup():
+    await init_models()
+    await init_redis()
 
 
 if __name__ == '__main__':

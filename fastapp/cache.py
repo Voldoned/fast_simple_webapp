@@ -6,7 +6,7 @@ from redis import asyncio as aioredis
 from config import REDIS_HOST, REDIS_PORT
 
 
-def init_redis():
+async def init_redis():
     redis = aioredis.from_url(
             f"redis://{REDIS_HOST}:{REDIS_PORT}",
             encoding="utf8",

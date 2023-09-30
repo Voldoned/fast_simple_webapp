@@ -2,7 +2,7 @@ import pytest
 
 from src.base_classes.base_response import BaseResponse
 from src.base_classes.api_client import APIClient
-from src.pydantic_schema import UserSchema, CreateUserResponse, ErrorMessage
+from src.pydantic_schemas import UserSchema, CreateUserResponse, ErrorMessage
 from src.generators_data import users_data, bad_users_data
 
 

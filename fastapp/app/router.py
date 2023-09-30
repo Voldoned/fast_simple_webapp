@@ -21,12 +21,18 @@ def select_all_from_user(session: Session) -> Query:
 @router.get("/users")
 @cache(expire=60)
 def get_users(session: Session = Depends(get_session)):
+    """
+    Get list of all users.
+    """
     return select_all_from_user(session).all()
 
 
 @router.get("/users/first/{count}")
 @cache(expire=60)
 def get_first_users(count: int, session: Session = Depends(get_session)):
+    """
+    Get first {count} users from all users.
+    """
     result = select_all_from_user(session).all()
 
     # Если введеное число будет отрицательным, то срез будет с конца списка.
@@ -47,11 +53,17 @@ def get_first_users(count: int, session: Session = Depends(get_session)):
 @router.get("/user/{id}")
 @cache(expire=60)
 def get_user_with_id(id: int, session: Session = Depends(get_session)):
+    """
+    Get user with id={id}.
+    """
     return session.query(User).where(User.id == id).all()
 
 
 @router.post("/user/add")
 def add_user(new_user: UserCreate, session: Session = Depends(get_session)):
+    """
+    Add new user.
+    """
     input_data = new_user.model_dump()
     statement = insert(User).values(**input_data)
     session.execute(statement)

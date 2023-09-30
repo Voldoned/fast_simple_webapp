@@ -6,8 +6,7 @@ COPY ./docker/app/requirements.txt .
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
 COPY ./fastapp .
+COPY ./.env ./.env
 
-RUN alembic init migrate
-COPY /docker/app/env.py ./migrate/env.py
 
-COPY .env .
+

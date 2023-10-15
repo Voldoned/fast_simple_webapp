@@ -43,19 +43,13 @@ class BaseResponse:
                 )
 
     def assert_has_response_json(self):
-        assert self.response_json, (
-                GEM.HEADER_CONTENT_TYPE_NOT_JSON.value + (
-            f"\nHeader 'content-type': {self.response_headers['content-type']}."
-        ))
-
-        assert self.response_json, f"JSON: {self.response_json}."
+        assert self.response_json, \
+            (f"{GEM.HEADER_CONTENT_TYPE_NOT_JSON.value}"
+             f"\nHeader 'content-type': {self.response_headers['Content-Type']}."
+             f"\nJSON: {self.response_json}")
 
     def validate_json(self, schema: type[BaseModel]):
         self.assert_has_response_json()
-        if isinstance(self.response_json, (list, tuple)):
-            for i in self.response_json:
-                schema.model_validate(i)
-        else:
-            schema.model_validate(self.response_json)
+        schema.model_validate(self.response_json)
 
         return self.response_json

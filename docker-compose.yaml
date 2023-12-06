@@ -65,10 +65,13 @@ services:
       dockerfile: ./docker/locust/Dockerfile
     volumes:
       - ./tests_locust/locust_out:/mnt/locust/locust_out
+      - tests_locust_tmp:/mnt/locust/locust_out
     depends_on:
       - fastapp
     networks:
       - app-network
+    # "while !</dev/tcp/fastapp/8000; do sleep 1" будет продолжаться до тех пор,
+    # пока FastAPi не заработает
     command: bash -c 'while !</dev/tcp/fastapp/8000; do sleep 1; done; locust -f /mnt/locust/locustfile.py --config=/mnt/locust/locust_test.conf'
 
   redis:
@@ -82,3 +85,4 @@ networks:
 
 volumes:
   db_tmp:
+  tests_locust_tmp:

@@ -1,28 +1,15 @@
-# FastAPI + PostgreSQL + NginX
-
-## API
-
-out host app: 0.0.0.0
-
-out port app: 8080
-
-get:
-- `/get_data_users` -- list of users (ID, name, password, email, registered at)
-- `/get_data/user/{id}` -- return user with ID = {id}
-- `/get_data/user/first/{count}` -- return first {count} users
-
-post:
-- `/get_data/user/add` -- create new user
+# FastAPI + PostgreSQL + NginX + Redis + PyTest + Locust
 
 ## Variables in `.env`
 
-Create file `.env` in work directory for run application with variables:
+Create file `.env` in work (this level) directory for run application with variables:
 - `DB_HOST` -- addres to DB
 - `DB_PORT` -- port to DB
 - `DB_USER` -- name user DB
 - `DB_PASSWORD` -- User's password DB
 - `DB_NAME` -- name of DB
-
+- `REDIS_HOST` -- addres to redis DB
+- `REDIS_PORT` -- port to redis DB
 
 ## Run
 In terminal
@@ -33,3 +20,9 @@ or
 ```bash
 sudo docker compose build && sudo docker compose up -d
 ```
+
+## API
+
+Address app: `http://0.0.0.0:8080`
+
+Swagger documentation: `http://0.0.0.0:8080/docs`

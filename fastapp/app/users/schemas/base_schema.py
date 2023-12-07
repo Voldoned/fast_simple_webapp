@@ -1,9 +1,9 @@
 from datetime import datetime
+
 from pydantic import BaseModel
 
 
-class UserCreate(BaseModel):
-    id: int
+class UserBaseSchema(BaseModel):
     email: str
     username: str
     password: str

@@ -48,7 +48,7 @@ class BaseResponse:
              f"\nHeader 'content-type': {self.response_headers['Content-Type']}."
              f"\nJSON: {self.response_json}")
 
-    def validate_json(self, schema: type[BaseModel]):
+    def validate_json(self, schema: BaseModel):
         self.assert_has_response_json()
         schema.model_validate(self.response_json)
 

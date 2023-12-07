@@ -15,7 +15,7 @@ class UsersSchema(BaseModel):
     data: List[UserSchema]
 
 
-class CreateUserResponse(BaseModel):
+class CreateUserResponseSchema(BaseModel):
     status: str = "success"
     new_data: UserSchema
 
@@ -37,4 +37,4 @@ class CreateArticleResponseSchema(BaseModel):
 
 
 class ErrorMessageSchema(BaseModel):
-    detail: str | list
+    detail: List[str]

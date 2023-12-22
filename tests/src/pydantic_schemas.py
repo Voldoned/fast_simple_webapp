@@ -4,10 +4,13 @@ from typing import List, Sequence
 from pydantic import BaseModel
 
 
-class UserSchema(BaseModel):
+class UserBaseSchema(BaseModel):
     email: str
     username: str
-    password: str
+
+
+class UserSchema(UserBaseSchema):
+    id: int
     registered_at: datetime
 
 
@@ -24,7 +27,6 @@ class ArticleSchema(BaseModel):
     title: str
     text: str
     annotation: str
-    published_at: datetime
 
 
 class ArticlesSchema(BaseModel):

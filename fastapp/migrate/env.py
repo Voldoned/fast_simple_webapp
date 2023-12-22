@@ -6,9 +6,8 @@ from sqlalchemy import pool
 from alembic import context
 
 from app.core.base import Base
-from app.core.db_settings import settings
-from config import DB_HOST, DB_PORT, DB_USER, DB_NAME, DB_PASSWORD
-
+from app.core.db_settings import db_settings
+from config import settings
 
 
 # this is the Alembic Config object, which provides
@@ -16,11 +15,11 @@ from config import DB_HOST, DB_PORT, DB_USER, DB_NAME, DB_PASSWORD
 config = context.config
 
 section = config.config_ini_section
-config.set_section_option(section, "DB_HOST", DB_HOST)
-config.set_section_option(section, "DB_PORT", DB_PORT)
-config.set_section_option(section, "DB_USER", DB_USER)
-config.set_section_option(section, "DB_NAME", DB_NAME)
-config.set_section_option(section, "DB_PASSWORD", DB_PASSWORD)
+config.set_section_option(section, "DB_HOST", settings.DB_HOST)
+config.set_section_option(section, "DB_PORT", settings.DB_PORT)
+config.set_section_option(section, "DB_USER", settings.DB_USER)
+config.set_section_option(section, "DB_NAME", settings.DB_NAME)
+config.set_section_option(section, "DB_PASSWORD", settings.DB_PASSWORD)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -38,7 +37,7 @@ target_metadata = Base.metadata
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
-config.set_main_option("sqlalchemy.url", settings.db_url)
+config.set_main_option("sqlalchemy.url", db_settings.db_url)
 
 
 def run_migrations_offline() -> None:

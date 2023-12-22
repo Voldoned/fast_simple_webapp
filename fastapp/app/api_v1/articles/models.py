@@ -1,14 +1,20 @@
 from datetime import datetime
 
-from sqlalchemy import String, TIMESTAMP, Column, Text
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import mapped_column, Mapped, relationship
 
-from app.core.base import Base
+from ...core.base import Base
 
 
 class Article(Base):
     # __table_args__ = {'extend_existing': True}
 
-    title: str = Column(String, nullable=False)
-    text: str = Column(Text, nullable=False)
-    annotation: str = Column(Text, nullable=False)
-    published_at: datetime = Column(TIMESTAMP, default=datetime.utcnow)
+    title: Mapped[str]
+    text: Mapped[str]
+    annotation: Mapped[str]
+    published_at: Mapped[datetime] = mapped_column(default=datetime.utcnow)
+
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE")
+    )
+    user: Mapped["User"] = relationship(back_populates="articles")

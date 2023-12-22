@@ -1,13 +1,16 @@
 from datetime import datetime
-from typing import List, Sequence
+from typing import List
 
 from pydantic import BaseModel
 
 
-class UserSchema(BaseModel):
+class UserBaseSchema(BaseModel):
     email: str
     username: str
-    password: str
+
+
+class UserSchema(UserBaseSchema):
+    id: int
     registered_at: datetime
 
 
@@ -24,7 +27,6 @@ class ArticleSchema(BaseModel):
     title: str
     text: str
     annotation: str
-    published_at: datetime
 
 
 class ArticlesSchema(BaseModel):
@@ -36,5 +38,5 @@ class CreateArticleResponseSchema(BaseModel):
     new_data: ArticleSchema
 
 
-class ErrorMessageSchema(BaseModel):
-    detail: List[str]
+# class ErrorMessageSchema(BaseModel):
+#     detail: str | list

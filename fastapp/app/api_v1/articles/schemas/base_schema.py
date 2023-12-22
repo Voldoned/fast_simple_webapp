@@ -1,10 +1,7 @@
-from datetime import datetime
-
-from pydantic import BaseModel
+from ....core.base_response_schema import BaseResponseSchema
 
 
-class ArticleBaseSchema(BaseModel):
+class ArticleBaseSchema(BaseResponseSchema):
     title: str
-    text: str
     annotation: str
-    published_at: datetime
+    text: str

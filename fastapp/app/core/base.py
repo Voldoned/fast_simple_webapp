@@ -1,5 +1,4 @@
-from sqlalchemy import Column, Integer, Sequence
-from sqlalchemy.orm import DeclarativeBase, Mapped, declared_attr
+from sqlalchemy.orm import DeclarativeBase, Mapped, declared_attr, mapped_column
 
 
 class Base(DeclarativeBase):
@@ -9,9 +8,13 @@ class Base(DeclarativeBase):
     def __tablename__(cls) -> str:
         return f"{cls.__name__.lower()}s"
 
-    id: Mapped[int] = Column(
-        "id",
-        Integer,
-        Sequence("id_seq", start=1),
-        primary_key=True,
+    id: Mapped[int] = mapped_column(
+        primary_key=True
     )
+
+    def __repr__(self):
+        cols = []
+        for col in self.__table__.columns.keys():
+            cols.append(col)
+
+        return f"<{self.__class__.__name__} {', '.join(cols)}>"

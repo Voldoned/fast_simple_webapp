@@ -12,13 +12,13 @@ from app.users.router import router as router_users
 
 from app.core.db_helper import db_helper
 from app.core.base import Base
-from app.core.db_settings import settings
+from app.core.db_settings import db_settings
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     redis = aioredis.from_url(
-        settings.db_cache_url,
+        db_settings.db_cache_url,
         encoding="utf8",
         decode_responses=True
     )

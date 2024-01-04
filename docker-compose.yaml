@@ -64,7 +64,6 @@ services:
       context: .
       dockerfile: ./docker/locust/Dockerfile
     volumes:
-      - ./tests_locust/locust_out:/mnt/locust/locust_out
       - tests_locust_tmp:/mnt/locust/locust_out
     depends_on:
       - fastapp
